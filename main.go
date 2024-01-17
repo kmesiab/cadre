@@ -15,7 +15,7 @@ import (
 
 const (
 	DefaultFilePerms   = 0o644
-	DefaultOpenAIModel = "gpt-3.5-turbo-instruct"
+	DefaultOpenAIModel = "gpt-3.5-turbo"
 )
 
 type argT struct {
@@ -59,6 +59,7 @@ func main() {
 			parsedDiffFiles,
 			argv.CompletionModel,
 			mergedArgs.ApiKey,
+			Prompt,
 			&OpenAICompletionService{},
 		)
 		if err != nil {
@@ -113,7 +114,7 @@ func saveReviews(reviews []ReviewedDiff) {
 	}
 }
 
-func getCodeReviews(diffs []*gh.GitDiff, model, apiKey string, svc CompletionServiceInterface) ([]ReviewedDiff, error) {
+func getCodeReviews(diffs []*gh.GitDiff, model, apiKey, prompt string, svc CompletionServiceInterface) ([]ReviewedDiff, error) {
 	reviewChan := make(chan ReviewedDiff)
 	var reviews []ReviewedDiff
 
@@ -121,7 +122,7 @@ func getCodeReviews(diffs []*gh.GitDiff, model, apiKey string, svc CompletionSer
 		go func(d *gh.GitDiff) {
 			fmt.Printf("🤖 Getting code review for %s\n", path.Base(d.FilePathNew))
 
-			review, err := svc.GetCompletion(d.DiffContents, model, apiKey)
+			review, err := svc.GetCompletion(d.DiffContents, model, apiKey, prompt)
 
 			rDiff := ReviewedDiff{
 				Error:  err,
