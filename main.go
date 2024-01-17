@@ -13,9 +13,15 @@ import (
 	"github.com/mkideal/cli"
 )
 
+const (
+	DefaultFilePerms   = 0o644
+	DefaultOpenAIModel = "gpt-4-1106-preview"
+)
+
 type argT struct {
-	URL    string `cli:"*url" usage:"The GitHub pull request URL"`
-	ApiKey string `cli:"key" env:"OPENAI_API_KEY"  usage:"Your OpenAI API key. Leave this blank to use environment variable OPENAI_API_KEY"`
+	URL             string `cli:"*url" usage:"The GitHub pull request URL"`
+	ApiKey          string `cli:"key" env:"OPENAI_API_KEY"  usage:"Your OpenAI API key. Leave this blank to use environment variable OPENAI_API_KEY"`
+	CompletionModel string `cli:"model" env:"CADRE_COMPLETION_MODEL" usage:"The OpenAI API model to use for code reviews."`
 }
 
 type ReviewedDiff struct {
@@ -43,50 +49,68 @@ func main() {
 		}
 
 		fmt.Printf("📡 Getting pull request from GitHub...\n")
-
 		parsedDiffFiles, err := processPullRequest(mergedArgs.URL, &GithubDiffClient{})
-
 		if err != nil {
 			return err
 		}
 
 		fmt.Printf("\n⌛  Processing %d diff files.  This may take a while...\n\n", len(parsedDiffFiles))
-
-		reviews, err := getCodeReviews(parsedDiffFiles, "gpt-4-1106-preview", mergedArgs.ApiKey, &OpenAICompletionService{})
+		reviews, err := getCodeReviews(
+			parsedDiffFiles,
+			argv.CompletionModel,
+			mergedArgs.ApiKey,
+			&OpenAICompletionService{},
+		)
 		if err != nil {
 			return err
 		}
 
-		for _, review := range reviews {
-
-			if review.Error != nil {
-				fmt.Printf("⚠️ couldn't get the review for %s:  %s\n",
-					path.Base(review.Diff.FilePathNew),
-					review.Error,
-				)
-
-				continue
-			}
-
-			filename := path.Base(review.Diff.FilePathNew) + ".md"
-
-			err := saveReviewToFile(filename, review.Review)
-
-			if err != nil {
-				fmt.Printf("⚠️ couldn't save the review for %s:  %s\n",
-					filename,
-					err,
-				)
-
-				continue
-			}
-
-			fmt.Printf("💾 Saved review to %s\n", filename)
-		}
-
+		saveReviews(reviews)
 		fmt.Println("Done! 🏁")
+
 		return nil
 	}))
+}
+
+func saveReviews(reviews []ReviewedDiff) {
+	for _, review := range reviews {
+
+		if review.Error != nil {
+			fmt.Printf("⚠️ couldn't get the review for %s:  %s\n",
+				path.Base(review.Diff.FilePathNew),
+				review.Error,
+			)
+
+			continue
+		}
+
+		filename := path.Base(review.Diff.FilePathNew) + ".md"
+
+		// Ensure the directory exists
+		dir := path.Dir(filename)
+
+		// If it doesn't exist, create it
+		if _, err := os.Stat(dir); os.IsNotExist(err) {
+			if err := os.MkdirAll(dir, DefaultFilePerms); err != nil {
+				fmt.Printf("⚠️ couldn't create directory for %s: %s\n", dir, err)
+
+				continue
+			}
+		}
+
+		// Save the review to disk
+		err := saveReviewToFile(filename, review.Review)
+		if err != nil {
+			fmt.Printf("⚠️ couldn't save the review for %s:  %s\n",
+				filename,
+				err,
+			)
+
+			continue
+		}
+
+		fmt.Printf("💾 Saved review to %s\n", filename)
+	}
 }
 
 func getCodeReviews(diffs []*gh.GitDiff, model, apiKey string, svc CompletionServiceInterface) ([]ReviewedDiff, error) {
@@ -157,7 +181,7 @@ func saveReviewToFile(filename, reviewContent string) error {
 	}
 
 	// Write the review content to the file
-	err := os.WriteFile(filename, []byte(reviewContent), 0644)
+	err := os.WriteFile(filename, []byte(reviewContent), DefaultFilePerms)
 	if err != nil {
 		return fmt.Errorf("failed to write review to file: %s", err)
 	}
@@ -178,6 +202,11 @@ func coalesceConfiguration(cliArgs *argT) (*argT, error) {
 	// the environment variables
 	if cliArgs.ApiKey == "" {
 		cliArgs.ApiKey = envArgs.ApiKey
+	}
+
+	// If no model is provided, use the default model
+	if cliArgs.CompletionModel == "" {
+		cliArgs.CompletionModel = DefaultOpenAIModel
 	}
 
 	return cliArgs, nil

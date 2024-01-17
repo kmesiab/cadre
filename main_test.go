@@ -24,6 +24,21 @@ func TestCoalesceConfiguration_Key_CLIOverride(t *testing.T) {
 	assert.Equal(t, "overridden_key", result.ApiKey)
 }
 
+func TestCoalesceConfiguration_Model_CLIOverride(t *testing.T) {
+	// Set up to restore the value later
+	currentEnvVar := os.Getenv("CADRE_COMPLETION_MODEL")
+	defer os.Setenv("CADRE_COMPLETION_MODEL", currentEnvVar)
+
+	// Set up an override
+	err := os.Setenv("CADRE_COMPLETION_MODEL", "gpt-4")
+	require.NoError(t, err)
+
+	args := &argT{CompletionModel: "overridden_model"}
+	result, _ := coalesceConfiguration(args)
+
+	assert.Equal(t, "overridden_model", result.CompletionModel)
+}
+
 func TestProcessPullRequest(t *testing.T) {
 	// Create a mock GitHub client
 	mockClient := &MockGithubClient{}

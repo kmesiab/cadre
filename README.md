@@ -22,13 +22,15 @@ languages.
 - **User-Friendly CLI**: Simple and intuitive command-line interface
 for easy usage.
 - **Markdown Reports**: Outputs code reviews in markdown for flexible viewing
-and integration.
+  and integration.
+- **Configurable Model**: Use the default OpenAI model, or choose another
 
 ![Screenshot](./assets/cadre-screenshot.png)
 
 ## Review Details
 
-Each diff file is reviewed in isolation.  Code reviews are broken into several sections:
+Each diff file is reviewed in isolation.  Code reviews are broken into several
+sections:
 
 - Technical Accuracy
 - Best Practices
@@ -81,6 +83,8 @@ or
 ```bash
 # Run the application with a GitHub pull request URL and API key
 ./cadre --url=https://github.com/user/repo/pull/123 --key=your_api_key
+./cadre --url=https://github.com/a/repo/pull/123 --model gpt-3.5-turbo-instruct
+
 ```
 
 ### Command-Line Switches
@@ -88,7 +92,17 @@ or
 - `--url`: The GitHub pull request URL. Example: `--url=https://github.com/user/repo/pull/123`
 - `--key`: Your OpenAI API key. You can also set this using the `OPENAI_API_KEY`
 environment variable. Example: `--key=your_api_key`
+- `--model`: You can specify the (OpenAI Model)[https://platform.openai.
+  com/docs/models] to use by passing it here.
 - `--help`: Show help information.
+
+## Configuring The Model
+
+You can tell Cadre what OpenAI Model to use by passing it via
+the command line argument `--model` or by setting the `CADRE_COMPLETION_MODEL`
+environment variable.
+
+The most common models are: `gpt-4` and `gpt-3.5-turbo-1106`
 
 ### Running Tests ✔️
 
