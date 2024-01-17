@@ -1,4 +1,4 @@
-module cadre
+module github.com/kmesiab/cadre
 
 go 1.21
 
