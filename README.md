@@ -21,6 +21,24 @@ languages.
 - **AI-Powered Insights**: Employs ChatGPT for in-depth code analysis.
 - **User-Friendly CLI**: Simple and intuitive command-line interface
 for easy usage.
+- **Markdown Reports**: Outputs code reviews in markdown for flexible viewing
+and integration.
+
+![Screenshot](./assets/cadre-screenshot.png)
+
+## Review Details
+
+Each diff file is reviewed in isolation.  Code reviews are broken into several sections:
+
+- Technical Accuracy
+- Best Practices
+- Performance and Scalability
+- Readability and Clarity
+- Maintainability
+- Testability
+- Contextual Fit
+
+![Screenshot](./assets/cadre-best-practices-screenshot.png)
 
 ## Installation 🔧
 
@@ -31,38 +49,42 @@ Follow these steps:
 go install github.com/kmesiab/cadre@latest
 ```
 
-Set your OpenAI API Key:
+Set your OpenAI API Key (You can also pass this value on the command
+line w/ `--key`):
 
 ```bash
 export OPENAI_API_KEY=sk-[SECRET]
 ```
 
-Set your Ignore Files. These are file types that will be excluded from
-code reviews. They should be a comma-separated list of file extensions.
-For example:
-
-```bash
-export IGNORE_FILES=.mod,.sum
-```
-
 To run the program:
 
 ```bash
-cadre
+cadre --url [url to github pull request]
 ```
+
+---
 
 ## Usage 💡
 
-**Usage instructions for Cadre CLI go here. Provide examples and explain
-how users can interact with it.**
-
-## Development and Testing 🧪
-
-### Building the Project 🏗️
+To review a pull request, run the following command:
 
 ```bash
-make build
+./cadre --url [url to github pull request]
 ```
+
+or
+
+```bash
+# Run the application with a GitHub pull request URL and API key
+./cadre --url=https://github.com/user/repo/pull/123 --key=your_api_key
+```
+
+### Command-Line Switches
+
+- `--url`: The GitHub pull request URL. Example: `--url=https://github.com/user/repo/pull/123`
+- `--key`: Your OpenAI API key. You can also set this using the `OPENAI_API_KEY`
+environment variable. Example: `--key=your_api_key`
+- `--help`: Show help information.
 
 ### Running Tests ✔️
 
