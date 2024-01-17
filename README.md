@@ -72,6 +72,10 @@ To review a pull request, run the following command:
 ./cadre --url [url to github pull request]
 ```
 
+ex:
+
+![Screenshot](./assets/cadre-cli-screenshot.png)
+
 or
 
 ```bash
