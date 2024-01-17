@@ -63,8 +63,18 @@ func main() {
 				continue
 			}
 
-			filename := "reviews/" + path.Base(review.Diff.FilePathNew) + ".md"
-			err := os.WriteFile(filename, []byte(review.Review), 0o644)
+			filename := path.Base(review.Diff.FilePathNew) + ".md"
+
+			err := saveReviewToFile(filename, review.Review)
+
+			if err != nil {
+				fmt.Printf("couldn't save the review for %s:  %s",
+					filename,
+					err,
+				)
+
+				continue
+			}
 
 			fmt.Printf("Saved review to %s\n", filename)
 
@@ -141,6 +151,22 @@ func processPullRequest(prURL string, ghClient GithubDiffClientInterface) ([]*gh
 	parsedDiff := ghClient.ParseGitDiff(diffString, ignoreList)
 
 	return parsedDiff, nil
+}
+
+func saveReviewToFile(filename, reviewContent string) error {
+	// Check if the file already exists
+	if _, err := os.Stat(filename); err == nil {
+		return fmt.Errorf("file %s already exists, not overwriting", filename)
+	}
+
+	// Write the review content to the file
+	err := os.WriteFile(filename, []byte(reviewContent), 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write review to file: %s", err)
+	}
+
+	fmt.Printf("Saved review to %s\n", filename)
+	return nil
 }
 
 func coalesceConfiguration(cliArgs *argT) (*argT, error) {
