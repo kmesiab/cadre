@@ -29,6 +29,8 @@ func main() {
 	os.Exit(cli.Run(new(argT), func(ctx *cli.Context) error {
 		argv := ctx.Argv().(*argT)
 
+		printGreeting()
+
 		mergedArgs, err := coalesceConfiguration(argv)
 		if err != nil {
 			return fmt.Errorf("couldn't figure out the configuration. %s", err)
@@ -40,14 +42,17 @@ func main() {
 					"or set the OPENAI_API_KEY environment variable")
 		}
 
+		fmt.Printf("📡 Getting pull request from GitHub...\n")
+
 		parsedDiffFiles, err := processPullRequest(mergedArgs.URL, &GithubDiffClient{})
+
 		if err != nil {
 			return err
 		}
 
-		fmt.Printf("Processing %d diff files.  This may take a while...\n", len(parsedDiffFiles))
+		fmt.Printf("\n⌛  Processing %d diff files.  This may take a while...\n\n", len(parsedDiffFiles))
 
-		reviews, err := getCodeReviews(parsedDiffFiles, "gpt-4", mergedArgs.ApiKey, &OpenAICompletionService{})
+		reviews, err := getCodeReviews(parsedDiffFiles, "gpt-4-1106-preview", mergedArgs.ApiKey, &OpenAICompletionService{})
 		if err != nil {
 			return err
 		}
@@ -55,7 +60,7 @@ func main() {
 		for _, review := range reviews {
 
 			if review.Error != nil {
-				fmt.Printf("ERROR: couldn't get the review for %s:  %s\n",
+				fmt.Printf("⚠️ couldn't get the review for %s:  %s\n",
 					path.Base(review.Diff.FilePathNew),
 					review.Error,
 				)
@@ -68,7 +73,7 @@ func main() {
 			err := saveReviewToFile(filename, review.Review)
 
 			if err != nil {
-				fmt.Printf("couldn't save the review for %s:  %s",
+				fmt.Printf("⚠️ couldn't save the review for %s:  %s\n",
 					filename,
 					err,
 				)
@@ -76,18 +81,10 @@ func main() {
 				continue
 			}
 
-			fmt.Printf("Saved review to %s\n", filename)
-
-			if err != nil {
-				fmt.Printf("couldn't save the review for %s:  %s",
-					filename,
-					err,
-				)
-
-				continue
-			}
+			fmt.Printf("💾 Saved review to %s\n", filename)
 		}
 
+		fmt.Println("Done! 🏁")
 		return nil
 	}))
 }
@@ -98,7 +95,7 @@ func getCodeReviews(diffs []*gh.GitDiff, model, apiKey string, svc CompletionSer
 
 	for _, diff := range diffs {
 		go func(d *gh.GitDiff) {
-			fmt.Printf("Processing %s\n", path.Base(d.FilePathNew))
+			fmt.Printf("🤖 Getting code review for %s\n", path.Base(d.FilePathNew))
 
 			review, err := svc.GetCompletion(d.DiffContents, model, apiKey)
 
@@ -165,7 +162,6 @@ func saveReviewToFile(filename, reviewContent string) error {
 		return fmt.Errorf("failed to write review to file: %s", err)
 	}
 
-	fmt.Printf("Saved review to %s\n", filename)
 	return nil
 }
 
@@ -185,4 +181,16 @@ func coalesceConfiguration(cliArgs *argT) (*argT, error) {
 	}
 
 	return cliArgs, nil
+}
+
+func printGreeting() {
+	fmt.Println(`
+ _____   ___ ____________ _____ 
+/  __ \ / _ \|  _  \ ___ \  ___|
+| /  \// /_\ \ | | | |_/ / |__  
+| |    |  _  | | | |    /|  __| 
+| \__/\| | | | |/ /| |\ \| |___ 
+ \____/\_| |_/___/ \_| \_\____/ 
+
+	`)
 }
