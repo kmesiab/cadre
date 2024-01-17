@@ -15,7 +15,7 @@ import (
 
 const (
 	DefaultFilePerms   = 0o644
-	DefaultOpenAIModel = "gpt-4-1106-preview"
+	DefaultOpenAIModel = "gpt-3.5-turbo-instruct"
 )
 
 type argT struct {
