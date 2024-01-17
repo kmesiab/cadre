@@ -1,6 +1,11 @@
-# Cadre CLI 🚀
+# Cadre CLI 🚀🤖
 
 ![Golang](https://img.shields.io/badge/Go-00add8.svg?labelColor=171e21&style=for-the-badge&logo=go)
+![ChatGPT](https://img.shields.io/badge/ChatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)
+![GithubActions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+[![License](https://img.shields.io/github/license/GitGuardian/ggshield?color=%231B2D55&style=for-the-badge)](LICENSE)
+
+## Current Build Status 🏗️
 
 ![Build](https://github.com/kmesiab/cadre/actions/workflows/go-build.yml/badge.svg)
 ![Lint](https://github.com/kmesiab/cadre/actions/workflows/go-lint.yml/badge.svg)
