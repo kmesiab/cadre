@@ -9,19 +9,23 @@
 
 ## Overview 🌟
 
-Cadre CLI is a command-line application designed to automate code reviews across various programming
-languages, utilizing OpenAI's ChatGPT API. It offers intelligent insights and suggestions to
+Cadre CLI is a command-line application designed to automate code
+reviews across various programming languages, utilizing OpenAI's
+ChatGPT API. It offers intelligent insights and suggestions to
 improve code quality and developer efficiency.
 
 ## Features 🛠️
 
-- **Language-Agnostic Analysis**: Compatible with multiple programming languages.
+- **Language-Agnostic Analysis**: Compatible with multiple programming
+languages.
 - **AI-Powered Insights**: Employs ChatGPT for in-depth code analysis.
-- **User-Friendly CLI**: Simple and intuitive command-line interface for easy usage.
+- **User-Friendly CLI**: Simple and intuitive command-line interface
+for easy usage.
 
 ## Installation 🔧
 
-To install Cadre CLI, you need to have Go installed on your machine. Follow these steps:
+To install Cadre CLI, you need to have Go installed on your machine.
+Follow these steps:
 
 ```bash
 go install github.com/kmesiab/cadre@latest
@@ -33,8 +37,9 @@ Set your OpenAI API Key:
 export OPENAI_API_KEY=sk-[SECRET]
 ```
 
-Set your Ignore Files. These are file types that will be excluded from code reviews. They should be a
-comma-separated list of file extensions. For example:
+Set your Ignore Files. These are file types that will be excluded from
+code reviews. They should be a comma-separated list of file extensions.
+For example:
 
 ```bash
 export IGNORE_FILES=.mod,.sum
@@ -48,7 +53,8 @@ cadre
 
 ## Usage 💡
 
-**Usage instructions for Cadre CLI go here. Provide examples and explain how users can interact with it.**
+**Usage instructions for Cadre CLI go here. Provide examples and explain
+how users can interact with it.**
 
 ## Development and Testing 🧪
 
@@ -85,41 +91,43 @@ make lint-markdown
 
 ### Forking and Sending a Pull Request
 
-1. **Fork the Repository**: Click the 'Fork' button at the top right of this page.
+1. **Fork the Repository**: Click the 'Fork' button at the top right of this
+   page.
 2. **Clone Your Fork**:
 
-```bash
-git clone https://github.com/kmesiab/cadre
-cd cadre
-```
+   ```bash
+   git clone https://github.com/kmesiab/cadre
+   cd cadre
+   ```
 
 3. **Create a New Branch**:
 
-```bash
-git checkout -b your-branch-name
-```
+   ```bash
+   git checkout -b your-branch-name
+   ```
 
 4. **Make Your Changes**: Implement your changes or fix issues.
 5. **Commit and Push**:
 
-```bash
-git commit -m "Add your commit message"
-git push origin your-branch-name
-```
+   ```bash
+   git commit -m "Add your commit message"
+   git push origin your-branch-name
+   ```
 
-6. **Create a Pull Request**: Go to your fork on GitHub and click the 'Compare & pull request' button.
+6. **Create a Pull Request**: Go to your fork on GitHub and click the
+   'Compare & pull request' button.
 
 ## Github Guidelines
 
-Please ensure your code adheres to the project's 
-[standards and guidelines](https://github.com/kmesiab/cadre/discussions/).
+Please ensure your code adheres to the project's
+[standards and guidelines](https://github.com/kmesiab/ai-code-critic/discussions/24).
 
 ### Quick Tips
 
 Run `make lint` before committing to ensure your code is properly formatted.
 
 1. **Always rebase, never merge commit**
-2. Always use a descriptive commit message
+2. Always use a description commit message
 3. Separate your title from your description
 4. Keep commit messages under 50 characters
 5. Start your branch with `feat|bugfix|docs|style|refactor|perf|test`
@@ -127,8 +135,9 @@ Run `make lint` before committing to ensure your code is properly formatted.
 
 ## License 📝
 
-Information regarding the licensing of Cadre CLI will be included here.
+Information regarding the licensing of cadre will be included here.
 
 ---
 
-*Note: This project is under active development. Additional features and documentation will be updated in due course.* 🌈
+*Note: This project is under active development. Additional features
+and documentation will be updated in due course.* 🌈

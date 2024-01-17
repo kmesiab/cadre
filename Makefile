@@ -34,6 +34,10 @@ test-verbose:
 test-race:
 	CGO_ENABLED=1 go test -race -cover ./...
 
+convey:
+	@echo "🧪 Conveying tests in browser..."
+	goconvey -excludedDirs=vendor
+
 # Tooling
 install-tools:
 	@echo "🛠️ Installing tools"
